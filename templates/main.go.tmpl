@@ -1,0 +1,40 @@
+package main
+
+import (
+	_ "embed"
+	"flag"
+	"fmt"
+	"strings"
+)
+
+//go:embed {{.year}}_{{.day}}.txt
+var input string
+
+func init() {
+	input = strings.TrimRight(input, "\n")
+	if len(input) == 0 {
+		panic("empty input.txt file")
+	}
+}
+
+func main() {
+	var p int
+	flag.IntVar(&p, "p", 1, "part 1 or 2")
+	flag.Parse()
+
+	fmt.Println("Running part", p)
+
+	if p == 1 {
+		p1(input)
+	}
+	// else {
+	// 	p2(input)
+	// }
+}
+
+func p1(input string) {
+    fmt.Println(input)
+}
+
+// func p2(input string) {
+// }
