@@ -29,13 +29,13 @@ func main() {
 
 	if p == 1 {
 		p1(input)
+	} else {
+		p2(input)
 	}
-	// else {
-	// 	p2(input)
-	// }
 }
 
-func p1(input string) {
+func getData(input string) (*[]int, *[]int, int, error) {
+
 	re := regexp.MustCompile("[ ]+")
 
 	lines := strings.Split(input, "\n")
@@ -51,12 +51,12 @@ func p1(input string) {
 
 		lval, err := strconv.Atoi(vals[0])
 		if err != nil {
-			panic(err)
+			return nil, nil, 0, err
 		}
 
 		rval, err := strconv.Atoi(vals[1])
 		if err != nil {
-			panic(err)
+			return nil, nil, 0, err
 		}
 
 		left[i] = lval
@@ -66,9 +66,18 @@ func p1(input string) {
 	slices.Sort(left)
 	slices.Sort(right)
 
+	return &left, &right, line_len, nil
+}
+
+func p1(input string) {
+	left, right, line_len, err := getData(input)
+	if err != nil {
+		panic(err)
+	}
+
 	total := 0
 	for i := 0; i < line_len; i++ {
-		total = total + Abs(left[i], right[i])
+		total = total + Abs((*left)[i], (*right)[i])
 	}
 
 	fmt.Println(total)
@@ -81,5 +90,35 @@ func Abs(x int, y int) int {
 	return x - y
 }
 
-// func p2(input string) {
-// }
+func p2(input string) {
+	left, right, line_len, err := getData(input)
+	if err != nil {
+		panic(err)
+	}
+
+	total := 0
+
+	left_num := 0
+	right_num := 0
+
+	l := 0
+	r := 0
+	similarity_score := 0
+
+	for l < line_len && r < line_len {
+		left_num = (*left)[l]
+		right_num = (*right)[r]
+
+		if left_num == right_num {
+			similarity_score++
+			r++
+		} else if right_num > left_num {
+			total += left_num * similarity_score
+			similarity_score = 0
+			l++
+		} else {
+			r++
+		}
+	}
+	fmt.Println(total)
+}
